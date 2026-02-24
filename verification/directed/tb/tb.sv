@@ -16,21 +16,19 @@ module tb;
   test top_test (vif);
 
   // Instantiation
-  counter 
+  MyFSM 
     dut (
       .clk_i(vif.clk_i),
-      .rst_i(vif.rst_i),
-      .up_i(vif.up_i),
-      .dout_o(vif.dout_o)
+      .x_i(vif.x_i),
+      .y_o(vif.y_o)
   );
   
   // SVA
   bind dut sva 
   dut_sva (
       .clk_i(vif.clk_i),
-      .rst_i(vif.rst_i),
-      .up_i(vif.up_i),
-      .dout_o(vif.dout_o)
+      .x_i(vif.x_i),
+      .y_o(vif.y_o)
   );
 
   initial begin
