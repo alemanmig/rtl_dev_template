@@ -9,10 +9,11 @@ module test (
     $display("Begin Of Simulation.");
     
     // Apply reset
-    reset();
+    //reset();
 
-    count();
+    //count();
 
+    TestState();
     // Drain time
     #(200ns);
     $display("End Of Simulation.");
@@ -22,6 +23,13 @@ module test (
 
   // ======================= TASKS ======================== //
 
+  task automatic TestState();
+    vif.x_i=1'b0;
+    #10 vif.x_i=1'b1;
+    #30 vif.x_i=1'b0;
+    #20 vif.x_i=1'b1;
+  endtask : TestState
+/*
   task automatic reset();
     vif.rst_i = 1'b1;
     vif.up_i  = 1'b0;
@@ -43,6 +51,6 @@ module test (
     #25;
     vif.rst_i = 0;
   endtask : count
-
+*/
 
 endmodule : test
