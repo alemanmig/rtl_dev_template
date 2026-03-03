@@ -10,27 +10,25 @@ module tb;
   always #(MainClkPeriod / 2) clk_i = ~clk_i;
 
   // Interface
-  vif_if vif (clk_i);
+  vif_if vif (clk_i); //virtual interface 
 
   // Test
-  test top_test (vif);
+  test top_test (vif); //genersr las señales 
 
   // Instantiation
-  counter 
+  myFSM 
     dut (
       .clk_i(vif.clk_i),
-      .rst_i(vif.rst_i),
-      .up_i(vif.up_i),
-      .dout_o(vif.dout_o)
+      .x_i(vif.x_i),
+      .y_o(vif.y_o) //alemanmig github 
   );
   
-  // SVA
+  //SVA
   bind dut sva 
   dut_sva (
       .clk_i(vif.clk_i),
-      .rst_i(vif.rst_i),
-      .up_i(vif.up_i),
-      .dout_o(vif.dout_o)
+      .x_i(vif.x_i), 
+      .y_o(vif.y_o)
   );
 
   initial begin
