@@ -13,14 +13,15 @@ module tb;
   vif_if vif (clk_i); //virtual interface 
 
   // Test
-  test top_test (vif); //genersr las señales 
+  test top_test (vif); //generar las señales 
 
   // Instantiation
   myFSM 
     dut (
       .clk_i(vif.clk_i),
       .x_i(vif.x_i),
-      .y_o(vif.y_o) //alemanmig github 
+      .y_o(vif.y_o), 
+      .rst(vif.rst)
   );
   
   //SVA
@@ -28,7 +29,8 @@ module tb;
   dut_sva (
       .clk_i(vif.clk_i),
       .x_i(vif.x_i), 
-      .y_o(vif.y_o)
+      .y_o(vif.y_o),
+      .rst(vif.rst)
   );
 
   initial begin

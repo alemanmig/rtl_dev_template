@@ -9,7 +9,7 @@ module test (
     $display("Begin Of Simulation.");
     
     // Apply reset
-   // reset();
+    reset();
 
     test1();
 
@@ -21,16 +21,14 @@ module test (
 
 
   // ======================= TASKS ======================== //
-/*
+
   task automatic reset();
-    vif.rst_i = 1'b1;
-    vif.up_i  = 1'b0;
-    repeat (2) @(vif.cb);
-    vif.cb.rst_i <= 1'b0;
-    repeat (20) @(vif.cb);
+    vif.rst = 1;
+    #25;
+    vif.rst = 0;
   endtask : reset
 
-*/
+
   task automatic test1();
     vif.x_i = 0;
     #30;

@@ -10,7 +10,7 @@ interface vif_if(
   
   logic x_i;
   logic y_o;
-  //logic [3:0] dout_o;
+  logic rst;
 
  /* clocking cb @(posedge clk_i);
     default input #1ns output #1ns;
