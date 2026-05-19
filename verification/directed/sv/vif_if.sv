@@ -8,6 +8,13 @@ interface vif_if(
   timeunit      1ns;
   timeprecision 100ps;
   
+  // FSM
+  logic   rst_i;
+  logic   x_i;
+  logic   y_o;
+
+
+  /*
   logic rst_i;
   logic up_i;
   logic [3:0] dout_o;
@@ -16,7 +23,7 @@ interface vif_if(
     default input #1ns output #1ns;
     output rst_i;
     output up_i;
-  endclocking
+  endclocking*/
 
 endinterface : vif_if
 

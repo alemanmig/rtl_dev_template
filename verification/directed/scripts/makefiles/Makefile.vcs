@@ -87,7 +87,8 @@ endif
 # ==============================  TOOLS SETUP  ================================
 
 # Files
-RTL_FILES = $(RTL_DIR)/counter.sv
+RTL_FILES = $(RTL_DIR)/MyFSM.sv
+#RTL_FILES = -F $(RTL_DIR)/ark.f
 SVE = -F $(TB_DIR)/sve.f
 VERDI_FILE = $(VERDI_DIR)/verdi.tcl
 DPI_FILE = $(DPI_DIR)/dpi.cpp

@@ -2,66 +2,59 @@ module sva (
     // Interface signals
     input logic clk_i,
     input logic rst_i,
-    input logic up_i,
-    input logic [3:0] dout_o
+    input logic x_i,  
+    input logic y_o
 );
-     
-// (1) Behavior of the dout when rst asserted
-// dout is zero in next clock tick after rst
-  
-  DOUT_RST_ASRT_1: assert property (@(posedge clk_i) $rose(rst_i) |=> (dout_o == 0));
-  
-// dout is zero for all clock ticks during rst
-  DOUT_RST_ASRT_2: assert property (@(posedge clk_i) rst_i |-> (dout_o == 0));
-  
-// dout remain stable to zero for entire duration of rst
-    
-  DOUT_RST_ASRT_3: assert property (@(posedge clk_i) $rose(rst_i) |=> rst_i throughout ((dout_o == 0)[*1:36]));
 
-   
-// (2) dout is unknown anywhere in the simulation
-    
-// dout_o must be valid after rst deassert
-    
-  DOUT_UNKNW_1: assert property(@(posedge clk_i) $fell(rst_i) |-> !$isunknown(dout_o));
-    
-// dout must be valid for all clock edges
+  //property post_rst;
+  // (rst_i ==1'b1) |-> (dut.state == 2'b00); 
+  //endproperty
 
-   always@(posedge clk_i)
-    begin
-     DOUT_UNKNW_2: assert(!$isunknown(dout_o));
-    end     
-  
-// (3)   verifying up and down state of the counter  */
-  
-     
-// current value of dout must be one greater than previous value when up = 1
-     
-  UP_MODE_1: assert property (@(posedge clk_i) disable iff(rst_i) up_i |-> (dout_o == $past(dout_o + 1)) || (dout_o == 0));
-  
-// next value must be greater than zero when up = 1 and rst = 0 
-  
-  UP_MODE_2: assert property (@(posedge clk_i) $fell(rst_i) |=> (dout_o != 0));   
-  UP_MODE_3: assert property (@(posedge clk_i) $fell(rst_i) |-> up_i[->1] ##1 !$stable(dout_o));
+  // cambio de estado 00 a 01 
+  property s0_to_s1;
+   @(negedge clk_i) disable iff(rst_i)
+   (x_i == 1'b1 && dut.state ==2'b00) |-> dut.state ==2'b01;
+  endproperty
 
-// current value of dout must be one less than previous value when up = 0
-  
-  DOWN_MODE_1: assert property (@(posedge clk_i) disable iff(rst_i) !up_i |-> (dout_o == $past(dout_o - 1)) || (dout_o == 0) || ($past(dout_o) == 0));
-  
- 
-// next value must not be equal to zero when up = 0 and rst = 0   
-  DOWN_MODE_2: assert property(@(posedge clk_i) (!up_i && !rst_i) |=> !$stable(dout_o));   
+    // cambio de estado 01 a 10 
+  property s1_to_s2;
+   @(negedge clk_i) disable iff(rst_i)
+   (x_i == 1'b1 && dut.state ==2'b01) |-> dut.state ==2'b10;
+  endproperty
 
-// alternate way 
- 
- property p1;
-   if(up_i)
-     ((dout_o == $past(dout_o + 1)) || (dout_o == 0))
-     else
-       ((dout_o == $past(dout_o - 1)) || (dout_o == 0) || ($past(dout_o) == 0)); 
- endproperty
+    // cambio de estado 10 a 11 
+  property s2_to_s3;
+   @(negedge clk_i) disable iff(rst_i)
+   (x_i == 1'b1 && dut.state ==2'b10) |-> dut.state ==2'b11;
+  endproperty
 
-  BOTH_MODE_1:assert property(@(posedge clk_i) !rst_i |-> p1);
- 
+    // cambio de estado 11 a 00 
+  property s3_to_s0;
+   @(negedge clk_i) disable iff(rst_i)
+   (x_i == 1'b1 && dut.state ==2'b11) | (x_i == 1'b0 && dut.state ==2'b11) |-> dut.state ==2'b00;
+  endproperty
+
+  property output_w;
+  @(negedge clk_i) disable iff (rst_i)
+    (x_i == 1'b1 && dut.state ==2'b11) |-> (y_o == 1'b1);
+  endproperty
+
+  //check_rst: assert property (post_rst)
+  //  else $error("reset is not working");
+
+  state0_state1: assert property (s0_to_s1)
+    else $error("S0 to S1 is not working");
+
+  state1_state2: assert property (s1_to_s2)
+    else $error("S1 to S2 is not working");
+
+  state2_state3: assert property (s2_to_s3)
+    else $error("S2 to S3 is not working");
+  
+  state3_state0: assert property (s3_to_s0)
+    else $error("S3 to S0 is not working");
+
+  state3_out: assert property (output_w)
+    else $error("Output is not working");
 
 endmodule
